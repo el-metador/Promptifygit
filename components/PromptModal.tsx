@@ -23,6 +23,8 @@ export const PromptModal: React.FC<PromptModalProps> = ({
   const [timeLeft, setTimeLeft] = useState(10);
   const [isUnlockLoading, setIsUnlockLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [promptText, setPromptText] = useState<string | null>(prompt?.promptText ?? null);
+  const [isPromptTextLoading, setIsPromptTextLoading] = useState(false);
   
   // Review State
   const [rating, setRating] = useState(0);
@@ -35,14 +37,21 @@ export const PromptModal: React.FC<PromptModalProps> = ({
   // Загружаем отзывы при открытии
   useEffect(() => {
     if (prompt) {
-      setReviews(prompt.reviews || []);
-      // Проверяем, оставил ли пользователь уже отзыв
-      if (user) {
-        const userReview = (prompt.reviews || []).find(r => r.userId === user.id);
-        setHasUserReviewed(!!userReview);
-      }
+      setPromptText(prompt.promptText ?? null);
+      mockService
+        .getReviews(prompt.id)
+        .then((data) => setReviews(data))
+        .catch((err) => console.error('Failed to load reviews:', err));
     }
   }, [prompt, user]);
+
+  useEffect(() => {
+    if (!user) {
+      setHasUserReviewed(false);
+      return;
+    }
+    setHasUserReviewed(reviews.some((review) => review.userId === user.id));
+  }, [reviews, user]);
 
   // Устанавливаем step при изменении isUnlocked
   useEffect(() => {
@@ -52,6 +61,17 @@ export const PromptModal: React.FC<PromptModalProps> = ({
       setStep('preview');
     }
   }, [isUnlocked]);
+
+  // Загружаем защищенный текст при необходимости
+  useEffect(() => {
+    if (!prompt || !isUnlocked || promptText) return;
+    setIsPromptTextLoading(true);
+    mockService
+      .getPromptSecret(prompt.id)
+      .then((text) => setPromptText(text))
+      .catch((err) => console.error('Failed to load prompt text:', err))
+      .finally(() => setIsPromptTextLoading(false));
+  }, [prompt, isUnlocked, promptText]);
 
   // Таймер для разблокировки
   useEffect(() => {
@@ -89,6 +109,12 @@ export const PromptModal: React.FC<PromptModalProps> = ({
     try {
       await onUnlock(prompt.id);
       setStep('view');
+      if (!promptText) {
+        setIsPromptTextLoading(true);
+        const text = await mockService.getPromptSecret(prompt.id);
+        setPromptText(text);
+        setIsPromptTextLoading(false);
+      }
     } catch (error) {
       console.error('Unlock failed:', error);
       setStep('preview');
@@ -98,10 +124,10 @@ export const PromptModal: React.FC<PromptModalProps> = ({
   };
 
   const copyToClipboard = async () => {
-    if (!prompt.promptText) return;
+    if (!promptText) return;
     
     try {
-      await navigator.clipboard.writeText(prompt.promptText);
+      await navigator.clipboard.writeText(promptText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
@@ -258,7 +284,8 @@ export const PromptModal: React.FC<PromptModalProps> = ({
                   {isUnlocked && (
                     <button 
                       onClick={copyToClipboard}
-                      className="flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary-light transition-colors"
+                      disabled={isPromptTextLoading || !promptText}
+                      className="flex items-center gap-1.5 text-xs font-medium text-primary hover:text-primary-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                       {copied ? 'Copied!' : 'Copy Text'}
@@ -269,7 +296,7 @@ export const PromptModal: React.FC<PromptModalProps> = ({
                 <div className="relative rounded-2xl bg-black/50 border border-zinc-800 overflow-hidden">
                   {isUnlocked ? (
                     <div className="p-5 font-mono text-sm text-zinc-300 leading-relaxed break-words selection:bg-primary/30">
-                      {prompt.promptText}
+                      {isPromptTextLoading ? 'Loading prompt...' : promptText || 'Prompt text unavailable.'}
                     </div>
                   ) : (
                     <div className="relative p-4 h-40 flex items-center justify-center bg-zinc-900/30">
@@ -284,6 +311,8 @@ export const PromptModal: React.FC<PromptModalProps> = ({
                                 onClick={handleStartUnlock} 
                                 size="lg" 
                                 className="shadow-2xl shadow-primary/20"
+                                disabled={isUnlockLoading}
+                                isLoading={isUnlockLoading}
                               >
                                 Unlock for 1 Coin
                               </Button>

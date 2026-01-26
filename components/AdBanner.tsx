@@ -7,6 +7,12 @@ interface AdBannerProps {
 }
 
 export const AdBanner: React.FC<AdBannerProps> = ({ ad }) => {
+  const handleClick = () => {
+    if (ad.link) {
+      window.open(ad.link, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   return (
     <div className="my-6 relative overflow-hidden rounded-2xl bg-zinc-900 border border-zinc-800">
       <div className="absolute top-2 right-2 bg-black/60 px-2 py-0.5 text-[8px] font-bold text-zinc-400 uppercase rounded backdrop-blur-sm z-10">
@@ -20,7 +26,9 @@ export const AdBanner: React.FC<AdBannerProps> = ({ ad }) => {
           <div className="p-4 sm:w-2/3 flex flex-col justify-center">
             <h4 className="font-bold text-white text-lg leading-tight mb-1">{ad.title}</h4>
             <p className="text-sm text-zinc-400 mb-4 line-clamp-2">{ad.description}</p>
-            <Button variant="outline" size="sm" className="self-start">{ad.cta}</Button>
+            <Button variant="outline" size="sm" className="self-start" onClick={handleClick}>
+              {ad.cta}
+            </Button>
           </div>
       </div>
     </div>

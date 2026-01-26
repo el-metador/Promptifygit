@@ -3,12 +3,9 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-// ❗ НИКАКИХ throw В ФРОНТЕ
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Supabase env variables are missing', {
-    supabaseUrl,
-    supabaseAnonKey,
-  });
+export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+if (!isSupabaseConfigured) {
+  console.error('Supabase env variables are missing');
 }
 
 export const supabase = createClient(

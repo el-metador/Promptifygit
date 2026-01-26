@@ -9,9 +9,20 @@ interface ProfilePageProps {
   unlockedPrompts: Prompt[];
   onLogout: () => void;
   onPromptClick: (prompt: Prompt) => void;
+  onGoHome: () => void;
 }
 
-export const ProfilePage: React.FC<ProfilePageProps> = ({ user, unlockedPrompts, onLogout, onPromptClick }) => {
+export const ProfilePage: React.FC<ProfilePageProps> = ({
+  user,
+  unlockedPrompts,
+  onLogout,
+  onPromptClick,
+  onGoHome,
+}) => {
+  const avatarUrl =
+    user.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}`;
+  const handleName = user.email ? user.email.split('@')[0] : 'user';
+
   return (
     <div className="min-h-screen bg-black text-white pb-24 animate-fade-in">
         {/* Header Cover */}
@@ -24,7 +35,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ user, unlockedPrompts,
             <div className="flex justify-between items-end mb-4">
                 <div className="relative">
                     <img 
-                        src={user.avatar} 
+                        src={avatarUrl} 
                         alt={user.name} 
                         className="w-24 h-24 rounded-full border-4 border-black bg-zinc-800 object-cover"
                     />
@@ -45,7 +56,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ user, unlockedPrompts,
             {/* Name & Bio */}
             <div className="mb-6">
                 <h1 className="text-2xl font-bold text-white">{user.name}</h1>
-                <p className="text-zinc-500 text-sm">@{user.email.split('@')[0]} • Creator</p>
+                <p className="text-zinc-500 text-sm">@{handleName} • Creator</p>
             </div>
 
             {/* Stats Card */}
@@ -90,7 +101,9 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({ user, unlockedPrompts,
                 <div className="py-12 text-center text-zinc-500 flex flex-col items-center">
                     <Grid className="w-12 h-12 mb-4 opacity-20" />
                     <p className="text-sm">No prompts unlocked yet.</p>
-                    <Button variant="neon" size="sm" className="mt-4" onClick={() => {}}>Explore Feed</Button>
+                    <Button variant="neon" size="sm" className="mt-4" onClick={onGoHome}>
+                      Explore Feed
+                    </Button>
                 </div>
             )}
         </div>

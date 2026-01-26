@@ -8,6 +8,10 @@ interface BottomNavProps {
 }
 
 export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onTabChange, userRole }) => {
+  const openExternal = (url: string) => {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   const navItems = [
     { id: 'home', icon: Home, label: 'Feed' },
     { id: 'community', icon: Users, label: 'Chat', link: 'https://t.me/promptify_community' },
@@ -26,7 +30,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onTabChange, u
                 return (
                     <button 
                         key={item.id}
-                        onClick={() => userRole === 'admin' ? onTabChange('admin') : onTabChange('create_placeholder')}
+                        onClick={() => {
+                          if (userRole === 'admin') onTabChange('admin');
+                        }}
                         className="group relative -top-6 mx-1"
                     >
                         <div className="absolute inset-0 bg-primary blur-lg opacity-40 group-hover:opacity-60 transition-opacity rounded-full"></div>
@@ -40,7 +46,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onTabChange, u
             return (
               <button
                 key={item.id}
-                onClick={() => item.link ? window.open(item.link, '_blank') : onTabChange(item.id)}
+                onClick={() => item.link ? openExternal(item.link) : onTabChange(item.id)}
                 className={`flex flex-col items-center justify-center w-14 h-full rounded-full transition-all duration-200 ${isActive ? 'text-primary' : 'text-zinc-500 hover:text-zinc-300'}`}
               >
                 <item.icon className={`w-5 h-5 mb-0.5 ${isActive ? 'fill-current' : ''}`} strokeWidth={2} />

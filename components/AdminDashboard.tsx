@@ -49,6 +49,14 @@ const emptyForm: PromptFormData = {
 
 const AI_MODELS = ['Midjourney', 'DALL-E', 'Stable Diffusion', 'ChatGPT', 'Claude', 'Other'];
 const CATEGORIES = ['Art', 'Photography', 'Design', 'Writing', 'Code', 'Business', 'Other'];
+const isValidUrl = (value: string) => {
+  try {
+    new URL(value);
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   prompts: initialPrompts,
@@ -103,7 +111,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     setFormData({
       title: prompt.title,
       description: prompt.description,
-      promptText: prompt.promptText,
+      promptText: prompt.promptText || '',
       imageUrl: prompt.imageUrl,
       aiModel: prompt.aiModel,
       category: prompt.category || 'Art',
@@ -111,6 +119,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       isTrending: prompt.isTrending
     });
     setError('');
+    setIsLoading(true);
+    mockService
+      .getPromptSecret(prompt.id)
+      .then((text) =>
+        setFormData((prev) => ({
+          ...prev,
+          promptText: text || prev.promptText,
+        }))
+      )
+      .catch((err) => console.error('Failed to load prompt text:', err))
+      .finally(() => setIsLoading(false));
     setIsModalOpen(true);
   };
 
@@ -123,6 +142,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     }
     if (!formData.promptText.trim()) {
       setError('Prompt text is required');
+      return;
+    }
+    if (formData.imageUrl && !isValidUrl(formData.imageUrl)) {
+      setError('Image URL must be a valid URL');
       return;
     }
 

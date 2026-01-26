@@ -4,41 +4,62 @@ import { Button } from './Button';
 
 interface LoginModalProps {
   onClose: () => void;
-  onLogin: (email: string, password?: string) => Promise<void>;
+  onLogin: (args: { provider: 'google' } | { provider: 'email'; email: string; password?: string }) => Promise<void>;
+  allowClose?: boolean;
+  errorMessage?: string;
 }
 
-export const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLogin }) => {
+export const LoginModal: React.FC<LoginModalProps> = ({
+  onClose,
+  onLogin,
+  allowClose = true,
+  errorMessage,
+}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
     
     setIsLoading(true);
-    await onLogin(email, password);
-    setIsLoading(false);
-    onClose();
+    setFormError(null);
+    try {
+      await onLogin({ provider: 'email', email, password: password || undefined });
+      if (allowClose) onClose();
+    } catch (err: any) {
+      setFormError(err?.message || 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleGoogleLogin = () => {
-      setIsLoading(true);
-      setTimeout(() => {
-          onLogin('alex_design@gmail.com');
-          onClose();
-      }, 1500);
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    setFormError(null);
+    try {
+      await onLogin({ provider: 'google' });
+      if (allowClose) onClose();
+    } catch (err: any) {
+      setFormError(err?.message || 'Google sign-in failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
       <div className="w-full max-w-sm bg-surface rounded-3xl border border-white/10 p-8 shadow-2xl relative">
-        <button 
-          onClick={onClose}
-          className="absolute right-4 top-4 p-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        {allowClose && (
+          <button 
+            onClick={onClose}
+            className="absolute right-4 top-4 p-2 rounded-full text-zinc-400 hover:text-white hover:bg-white/5 transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
 
         <div className="text-center mb-8">
           <div className="w-12 h-12 bg-primary/20 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary/20">
@@ -98,6 +119,12 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onClose, onLogin }) => {
             Sign In
           </Button>
         </form>
+
+        {(formError || errorMessage) && (
+          <p className="mt-4 text-center text-xs text-red-400">
+            {formError || errorMessage}
+          </p>
+        )}
         
         <p className="mt-6 text-center text-xs text-zinc-600">
            New accounts receive <span className="text-primary font-bold">10 free coins</span> instantly.

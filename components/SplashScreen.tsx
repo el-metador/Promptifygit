@@ -17,16 +17,8 @@ export const SplashScreen: React.FC = () => {
       
       {/* Loading Bar */}
       <div className="mt-8 h-1 w-48 bg-zinc-900 rounded-full overflow-hidden">
-        <div className="h-full bg-primary animate-[loading_2s_ease-in-out_infinite] w-full origin-left scale-x-0"></div>
+        <div className="h-full bg-primary animate-loading w-full origin-left scale-x-0"></div>
       </div>
-      
-      <style>{`
-        @keyframes loading {
-          0% { transform: scaleX(0); }
-          50% { transform: scaleX(0.7); }
-          100% { transform: scaleX(1); transform-origin: right; opacity: 0;}
-        }
-      `}</style>
     </div>
   );
 };

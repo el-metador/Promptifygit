@@ -24,14 +24,16 @@ export interface Prompt {
   id: string;
   title: string;
   description: string;
-  promptText: string; // Hidden content
-  aiModel: 'Nano Banana Pro' | 'Veo 3.1' | 'Sora 2' | 'Gemini 3 Pro';
+  promptText?: string; // Hidden content (loaded only when unlocked)
+  aiModel: string;
   author: string;
+  category?: string;
   isTrending: boolean;
   ratingAvg: number;
   imageUrl: string;
   unlockCount: number;
   reviews: Review[];
+  createdAt?: string;
 }
 
 export interface Ad {
@@ -40,6 +42,7 @@ export interface Ad {
   description: string;
   imageUrl: string;
   cta: string;
+  link?: string;
 }
 
 export interface FilterState {
