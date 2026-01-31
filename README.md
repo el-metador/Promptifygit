@@ -29,9 +29,15 @@ Promptify is a prompt marketplace and library with coin-based unlocks, ratings, 
 
 Replace these placeholders with real images.
 
-![Home](docs/screenshots/home.png)
-![Prompt Details](docs/screenshots/prompt-details.png)
-![Admin Dashboard](docs/screenshots/admin-dashboard.png)
+<a href="https://postimg.cc/bZ0rZ6kk" target="_blank"><img src="https://i.postimg.cc/bZ0rZ6kk/Screenshot-20260131-170620-Chrome.jpg" alt="Screenshot-20260131-170620-Chrome"></a><br><br>
+<a href="https://postimg.cc/zywvydK5" target="_blank"><img src="https://i.postimg.cc/zywvydK5/Screenshot-20260131-170628-Chrome.jpg" alt="Screenshot-20260131-170628-Chrome"></a><br><br>
+<a href="https://postimg.cc/4YRnNCKj" target="_blank"><img src="https://i.postimg.cc/4YRnNCKj/Screenshot-20260131-170631-Chrome.jpg" alt="Screenshot-20260131-170631-Chrome"></a><br><br>
+<a href="https://postimg.cc/YvN0vXYB" target="_blank"><img src="https://i.postimg.cc/YvN0vXYB/Screenshot-20260131-170635-Chrome.jpg" alt="Screenshot-20260131-170635-Chrome"></a><br><br>
+<a href="https://postimg.cc/4YRnNCKr" target="_blank"><img src="https://i.postimg.cc/4YRnNCKr/Screenshot-20260131-170640-Chrome.jpg" alt="Screenshot-20260131-170640-Chrome"></a><br><br>
+<a href="https://postimg.cc/9DHzF3Rh" target="_blank"><img src="https://i.postimg.cc/9DHzF3Rh/Screenshot-20260131-170643-Chrome.jpg" alt="Screenshot-20260131-170643-Chrome"></a><br><br>
+<a href="https://postimg.cc/87gsP8Jk" target="_blank"><img src="https://i.postimg.cc/87gsP8Jk/Screenshot-20260131-170656-Chrome.jpg" alt="Screenshot-20260131-170656-Chrome"></a><br><br>
+<a href="https://postimg.cc/3kQWJMyC" target="_blank"><img src="https://i.postimg.cc/3kQWJMyC/Screenshot-20260131-170659-Chrome.jpg" alt="Screenshot-20260131-170659-Chrome"></a><br><br>
+
 
 ## Local Setup (Frontend)
 
